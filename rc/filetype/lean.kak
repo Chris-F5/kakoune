@@ -67,6 +67,8 @@ define-command -params 1 lean-abbreviation-try-substitute %{
 define-command -hidden lean-indent-on-new-line %<
     # preserve previous line indent
     try %{ execute-keys -draft <semicolon> K <a-&> }
+    # cleanup trailing whitespaces from previous line
+    try %{ execute-keys -draft k x s \h+$ <ret> d }
 >
 
 }
