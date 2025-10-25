@@ -43,7 +43,7 @@ my @keys = keys %$data;
 my @escaped_keys = map { escape_regex($_) } @keys;
 
 # A regex matching any abbreviation.
-my $abbreviation_full_regex = '\\\\(' . join('|', @escaped_keys) . ')';
+my $abbreviation_full_regex = '(\\\\(' . join('|', @escaped_keys) . ')|.)';
 
 my @sorted_keys = sort { length($b) <=> length($a) } @keys;
 

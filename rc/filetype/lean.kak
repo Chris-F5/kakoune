@@ -17,8 +17,15 @@ hook global WinSetOption filetype=lean %{
 
     hook buffer InsertChar \n lean-indent-on-new-line
 
-    hook buffer InsertChar [^\n] lean-abbreviation-try-substitute
+    hook buffer InsertChar [^\n] %{ lean-abbreviation-try-substitute %{
+        reg / %opt{lean_abbreviation_terminated_regex}
+        execute-keys ';<a-/><ret>1s<ret>'
+    } }
 
+    hook buffer ModeChange pop:insert:[^:]* %{ lean-abbreviation-try-substitute %{
+        reg / %opt{lean_abbreviation_full_regex}
+        execute-keys ';<a-/><ret>'
+    } }
 }
 
 
@@ -35,12 +42,11 @@ define-command lean-abbreviation-substitute %{
     evaluate-commands %opt{lean_abbreviation_substitute_command}
 }
 
-define-command lean-abbreviation-try-substitute %{
+define-command -params 1 lean-abbreviation-try-substitute %{
     evaluate-commands -save-regs '/"|^@s' %{
         try %{
             evaluate-commands -draft %{
-                reg / %opt{lean_abbreviation_terminated_regex}
-                execute-keys ';<a-/><ret>1s<ret>'
+                evaluate-commands %arg{1}
                 lean-abbreviation-substitute
                 reg s %val{selections_desc}
             }
