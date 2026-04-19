@@ -6,6 +6,7 @@
 
 hook global BufCreate .*[.]lean %{
     set-option buffer filetype lean
+    set-option -add buffer matching_pairs ⟨ ⟩
 }
 
 
@@ -69,6 +70,8 @@ define-command -hidden lean-indent-on-new-line %<
     try %{ execute-keys -draft <semicolon> K <a-&> }
     # cleanup trailing whitespaces from previous line
     try %{ execute-keys -draft k x s \h+$ <ret> d }
+    # remove previous empty lines resulting from the automatic indent
+    try %< execute-keys -draft k x <a-k>^\h+$<ret> Hd >
 >
 
 }
